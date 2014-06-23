@@ -1,15 +1,15 @@
 //
-//  MainViewController.h
+//  FilterViewController.h
 //  Yelp
 //
-//  Created by Timothy Lee on 3/21/14.
+//  Created by Stephani Alves on 6/21/14.
 //  Copyright (c) 2014 codepath. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "FilterOptions.h"
 
-@interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@interface FilterViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) FilterOptions *filterOptions;
 

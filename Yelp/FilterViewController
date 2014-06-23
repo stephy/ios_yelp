@@ -1,0 +1,288 @@
+//
+//  FilterViewController.m
+//  Yelp
+//
+//  Created by Stephani Alves on 6/21/14.
+//  Copyright (c) 2014 codepath. All rights reserved.
+//
+
+#import "FilterViewController.h"
+#import "MostPopularCell.h"
+#import "AccordionCell.h"
+#import "PriceCell.h"
+#import "FilterOptions.h"
+
+int const CATEGORIES_ROW_AMOUNT = 3;
+int const SECTION_PRICE = 0;
+int const SECTION_CATEGORY = 1;
+int const SECTION_SORT = 2;
+int const SECTION_DISTANCE = 3;
+int const SECTION_DEALS = 4;
+int const TOTAL_SECTIONS = 5;
+
+@interface FilterViewController ()
+
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) NSArray *mostPopularArray;
+@property (strong, nonatomic) NSArray *sortBy;
+@property (strong, nonatomic) NSArray *categories;
+@property (strong, nonatomic) NSArray *distance;
+@property (strong, nonatomic) NSDictionary *categoryKeys;
+@property BOOL *showAllCategories;
+@property (strong, nonatomic) FilterOptions *filterOptions;
+
+
+@end
+
+@implementation FilterViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+        self.mostPopularArray = @[ @"Open Now", @"Hot & New", @"Offering a deal", @"Delivery" ];
+        self.sortBy = @[ @"Best Match", @"Distance", @"Highest Rated" ];
+        self.distance = @[ @"Auto", @"5 miles", @"10 miles", @"50 miles"];
+        [self setTopLevelCategories];
+        self.showAllCategories = NO;
+        self.filterOptions = [[FilterOptions alloc] init];
+    }
+    
+    return self;
+}
+
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    
+    // Do any additional setup after loading the view from its nib.
+    //load categories
+    
+    //load personalized cell
+    //registration process
+    [self.tableView registerNib:[UINib nibWithNibName:@"PriceCell" bundle:nil] forCellReuseIdentifier:@"PriceCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"MostPopularCell" bundle:nil] forCellReuseIdentifier:@"MostPopularCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"AccordionCell" bundle:nil] forCellReuseIdentifier:@"AccordionCell"];
+    
+}
+
+- (void)didReceiveMemoryWarning{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+
+    if (section == SECTION_PRICE){
+        return @"Price";
+    }
+    if (section == SECTION_CATEGORY){
+        return @"Categories";
+    }
+    if (section == SECTION_SORT){
+        return @"Sort By";
+    }
+    if (section == SECTION_DISTANCE){
+        return @"Distance";
+    }
+    if (section == SECTION_DEALS){
+        return @"Deals";
+    }
+    
+    return @"";
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    //price,  deals
+    if (section == SECTION_PRICE || section == SECTION_DEALS) {
+        return 1;
+    }
+    //categories
+    if (section == SECTION_CATEGORY) {
+        if (!self.showAllCategories){
+            return CATEGORIES_ROW_AMOUNT+1; //3 categories + show all row
+        }else{
+           return ([self.categories count]);//all categories + show less row
+        }
+    }
+    //sort by
+    if (section == SECTION_SORT) {
+        return [self.sortBy count];
+    }
+    
+    //distance
+    if (section == SECTION_DISTANCE) {
+        return [self.distance count];
+    }
+    
+    return 0;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return TOTAL_SECTIONS;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    UITableViewCell *cell;
+    //price
+    if (indexPath.section == SECTION_PRICE) {
+        PriceCell *priceCell = [tableView dequeueReusableCellWithIdentifier:@"PriceCell"];
+        priceCell.priceControl.selectedSegmentIndex = self.filterOptions.price;
+        cell = priceCell;
+    }
+    
+    //categories
+    if(indexPath.section == SECTION_CATEGORY){
+        AccordionCell *categoryCell = [tableView dequeueReusableCellWithIdentifier:@"AccordionCell"];
+        
+        if (!self.showAllCategories){
+            if (indexPath.row == (CATEGORIES_ROW_AMOUNT)) {
+                //show more option on the 4th row
+                categoryCell.rowLabel.text = @"Show more ...";
+            }else{
+                categoryCell.rowLabel.text = self.categories[indexPath.row];
+            }
+        }else{
+            NSLog(@"indexpath.row %d, catcount: %d", indexPath.row, ([self.categories count]-1));
+            if (indexPath.row == ([self.categories count]-1)) {
+               //show less option on the last row
+                categoryCell.rowLabel.text = @"Show Less ...";
+            }else{
+                categoryCell.rowLabel.text = self.categories[indexPath.row];
+            }
+            
+        }
+        cell = categoryCell;
+    }
+    
+    //sort by
+    if(indexPath.section == SECTION_SORT){
+        AccordionCell *sortByCell = [tableView dequeueReusableCellWithIdentifier:@"AccordionCell"];
+        sortByCell.rowLabel.text = self.sortBy[indexPath.row];
+        cell = sortByCell;
+    }
+    
+    //distance
+    if(indexPath.section == SECTION_DISTANCE){
+        AccordionCell *distanceCell = [tableView dequeueReusableCellWithIdentifier:@"AccordionCell"];
+        distanceCell.rowLabel.text = self.distance[indexPath.row];
+        cell = distanceCell;
+    }
+    
+    //deals
+    if(indexPath.section == SECTION_DEALS){
+        MostPopularCell *dealsCell = [tableView dequeueReusableCellWithIdentifier:@"MostPopularCell"];
+        [dealsCell.switchControl setOn:*(self.filterOptions.deals) animated:YES];
+        [dealsCell.switchControl addTarget:self action:@selector(dealsSwitchToggled) forControlEvents:UIControlEventValueChanged];
+        dealsCell.cellLabel.text = @"Deals";
+        cell = dealsCell;
+    }
+    return cell;
+}
+
+-(void) setTopLevelCategories{
+
+     self.categoryKeys = @{
+        @"Active Life" : @"active",
+        @"Arts & Entertainment" : @"arts",
+        @"Automotive" : @"auto",
+        @"Beauty & Spas" : @"beautysvc",
+        @"Education" : @"education",
+        @"Event Planning & Services" : @"eventservices",
+        @"Financial Services" : @"financialservices",
+        @"Food" : @"food",
+        @"Health & Medical" : @"health",
+        @"Home Services" : @"homeservices",
+        @"Hotels & Travel" : @"hotelstravel",
+        @"Local Flavor" : @"localflavor",
+        @"Local Services" : @"localservices",
+        @"Mass Media" : @"massmedia",
+        @"Nightlife" : @"nightlife",
+        @"Pets" : @"pets",
+        @"Professional Services" : @"professional",
+        @"Public Services & Government" : @"publicservicesgovt",
+        @"Real Estate" : @"realestate",
+        @"Religious Organizations" : @"religiousorgs",
+        @"Restaurants" : @"restaurants",
+        @"Shopping" : @"shopping"
+    };
+    
+    NSMutableArray *topLevelCategoriesArray = [[NSMutableArray alloc] init];
+    
+    for (id key in [self.categoryKeys allKeys]) {
+        [topLevelCategoriesArray addObject:key];
+    }
+    
+    //categories sorted by alphabetical order
+    self.categories = [[topLevelCategoriesArray copy] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    //where indexPath.row is the selected cell
+    if (self.showAllCategories && indexPath.row == ([self.categories count]-1)) {
+        [self showLessCategories];
+    }
+    
+    if (!self.showAllCategories && indexPath.row == CATEGORIES_ROW_AMOUNT ) {
+        [self showMoreCategories];
+    }
+}
+
+
+-(void)showMoreCategories {
+    NSLog(@"show more clicked");
+    self.showAllCategories = YES;
+    [self.tableView reloadData];
+}
+
+-(void)showLessCategories {
+    self.showAllCategories = NO;
+    [self.tableView reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    //load default settings
+    self.filterOptions = [[FilterOptions alloc] init];
+}
+
+#pragma "Store data"
+
+- (void)saveFilterSettingString: (NSString *)key withId: (id)ID {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:ID forKey:key];
+    [defaults synchronize];
+}
+
+- (void)saveFilterSettingInteger: (NSString *)key withInteger: (int)i {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:i forKey:key];
+    [defaults synchronize];
+}
+
+- (void)saveFilterSettingBOOL: (BOOL)b  withKey: (NSString *)key {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:b forKey:key];
+    [defaults synchronize];
+}
+
+#pragma "Stor"
+- (void)switchToggled:(id)sender {
+    UISwitch *theSwitch = (UISwitch *)sender;
+    UITableViewCell *cell = (UITableViewCell *)theSwitch.superview;
+    UITableView *tableView = (UITableView *)cell.superview;
+    NSIndexPath *indexPath = [tableView indexPathForCell:cell];
+    
+    if(theSwitch.on) {
+        // switch turned on
+        [self saveFilterSettingBOOL:YES withKey:@"deals"];
+    }
+    else {
+        // switch turned off
+        [self saveFilterSettingBOOL:NO withKey:@"deals"];
+    }
+}
+
+
+
+
+@end

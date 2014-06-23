@@ -3,6 +3,7 @@
 //  Yelp
 //
 //  Created by Timothy Lee on 3/21/14.
+//  Edited by Stephani Alves on 6/23/14
 //  Copyright (c) 2014 codepath. All rights reserved.
 //
 
@@ -38,7 +39,7 @@
                                  @"category_filter": category,
                                  @"radius_filter": radius,
                                  @"deals_filter": deals,
-                                 @"location" : @"San Francisco"};
+                                 @"location" : @"San Jose"};
     NSLog(@"query: %@", parameters);
     return [self GET:@"search" parameters:parameters success:success failure:failure];
 }

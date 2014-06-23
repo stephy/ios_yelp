@@ -161,7 +161,6 @@ int const BUTTON_WIDTH = 70;
     NSString *sort = [self.filterOptions.sortCodes objectForKey: self.filterOptions.sortBy];
     NSString *distance = [self.filterOptions.distanceConversions objectForKey: self.filterOptions.distance];
     [self searchWithTerm:searchBar.text sort:sort category:category radius:distance deals:deals];
-    //[self searchWithTerm:searchBar.text ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

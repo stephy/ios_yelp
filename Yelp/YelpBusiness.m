@@ -16,10 +16,16 @@
         
         //create location = address + city
         NSMutableString *loc = [NSMutableString string];
-        [loc appendString: dictionary[@"location"][@"address"][0]];
-        [loc appendString: @", "];
-        [loc appendString: dictionary[@"location"][@"city"]];
-        self.location =  [NSString stringWithString:loc];
+        if ([dictionary[@"location"][@"address"] count]>0) {
+            [loc appendString: dictionary[@"location"][@"address"][0]];
+            [loc appendString: @", "];
+            [loc appendString: dictionary[@"location"][@"city"]];
+            self.location =  [NSString stringWithString:loc];
+        }else{
+            self.location = dictionary[@"location"][@"city"];
+        }
+        
+        
         
         self.name = dictionary[@"name"];
         self.rating = dictionary[@"rating"];

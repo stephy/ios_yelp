@@ -17,6 +17,10 @@
              accessSecret:(NSString *)accessSecret;
 
 - (AFHTTPRequestOperation *)searchWithTerm:(NSString *)term
+                                      sort:(NSString *)sort
+                                  category:(NSString *)category
+                                    radius:(NSString *)radius
+                                     deals:(NSString *)deals
                                    success:(void (^)(AFHTTPRequestOperation *operation, id response))success
                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 

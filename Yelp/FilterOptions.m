@@ -60,6 +60,35 @@
         }else{
             self.deals = &(d);
         }
+        
+        
+        //set dictionaries
+        self.categoryCodes = @{
+                              @"Active Life" : @"active",
+                              @"Arts & Entertainment" : @"arts",
+                              @"Automotive" : @"auto",
+                              @"Beauty & Spas" : @"beautysvc",
+                              @"Education" : @"education",
+                              @"Event Planning & Services" : @"eventservices",
+                              @"Financial Services" : @"financialservices",
+                              @"Food" : @"food",
+                              @"Health & Medical" : @"health",
+                              @"Home Services" : @"homeservices",
+                              @"Hotels & Travel" : @"hotelstravel",
+                              @"Local Flavor" : @"localflavor",
+                              @"Local Services" : @"localservices",
+                              @"Mass Media" : @"massmedia",
+                              @"Nightlife" : @"nightlife",
+                              @"Pets" : @"pets",
+                              @"Professional Services" : @"professional",
+                              @"Public Services & Government" : @"publicservicesgovt",
+                              @"Real Estate" : @"realestate",
+                              @"Religious Organizations" : @"religiousorgs",
+                              @"Restaurants" : @"restaurants",
+                              @"Shopping" : @"shopping"
+                              };
+        self.distanceConversions = @{@"Auto": @"", @"0.5 miles" : @"804", @"1 mile":@"1609", @"5 miles":@"8046"};
+        self.sortCodes = @{ @"Best Match": @"0", @"Distance": @"1", @"Highest Rated": @"2" };
     }
     return self;
 }

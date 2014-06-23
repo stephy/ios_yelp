@@ -124,11 +124,15 @@ int const BUTTON_WIDTH = 70;
     return cell;
 }
 
-- (void)searchWithTerm: (NSString *)term {
+- (void)searchWithTerm:(NSString *)term
+                  sort:(NSString *)sort
+              category:(NSString *)category
+                radius:(NSString *)radius
+                 deals:(NSString *)deals{
     // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
     self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
-    
-    [self.client searchWithTerm:term success:^(AFHTTPRequestOperation *operation, id response) {
+    [self.client searchWithTerm:term sort:sort category:category radius:radius deals:deals
+                        success:^(AFHTTPRequestOperation *operation, id response) {
         
         self.yelpResults = [YelpBusiness yelpWithArray:[response objectForKey:@"businesses"]];
         [self.tableView reloadData];
@@ -146,7 +150,18 @@ int const BUTTON_WIDTH = 70;
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];
-    [self searchWithTerm:searchBar.text];
+    //get filter options
+    NSMutableArray *catCodes = [[NSMutableArray alloc] init];
+    for (NSString *s in self.filterOptions.category) {
+        NSString *code = [self.filterOptions.categoryCodes objectForKey:s];
+        [catCodes addObject:code];
+    }
+    NSString *category = [catCodes componentsJoinedByString:@","];
+    NSString *deals = self.filterOptions.deals ? @"true" : @"false";
+    NSString *sort = [self.filterOptions.sortCodes objectForKey: self.filterOptions.sortBy];
+    NSString *distance = [self.filterOptions.distanceConversions objectForKey: self.filterOptions.distance];
+    [self searchWithTerm:searchBar.text sort:sort category:category radius:distance deals:deals];
+    //[self searchWithTerm:searchBar.text ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

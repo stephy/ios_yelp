@@ -64,6 +64,8 @@ int const TOTAL_SECTIONS = 5;
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    //set title
+    self.navigationItem.title = @"Filters";
     //load personalized cell
     //registration process
     [self.tableView registerNib:[UINib nibWithNibName:@"PriceCell" bundle:nil] forCellReuseIdentifier:@"PriceCell"];

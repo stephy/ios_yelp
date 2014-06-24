@@ -135,6 +135,7 @@ int const BUTTON_WIDTH = 70;
                         success:^(AFHTTPRequestOperation *operation, id response) {
         
         self.yelpResults = [YelpBusiness yelpWithArray:[response objectForKey:@"businesses"]];
+                            NSLog(@"response: %@", response);
         [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

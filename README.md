@@ -24,4 +24,4 @@ Filter page. Unfortunately, not all the filters are supported in the Yelp API.
 * [x] Clicking on the "Search" button should dismiss the filters page and trigger the search w/ the new filter settings.
 * [ ] Optional: Implement the restaurant detail page.
 
-![alt tag](https://raw.githubusercontent.com/stephy/rottenTomatoes2/master/rottenTomatoes.gif)
+![alt tag](https://raw.githubusercontent.com/stephy/ios_yelp/master/yelp.gif)

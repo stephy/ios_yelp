@@ -18,6 +18,10 @@
     
     MainViewController *mvc = [[MainViewController alloc] init];
     UINavigationController *nmvc = [[UINavigationController alloc] initWithRootViewController:mvc];
+    //setting navigation controller back button color to white
+    nmvc.navigationBar.tintColor = [UIColor whiteColor];
+    //change text color
+    [nmvc.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
     self.window.rootViewController = nmvc;
     

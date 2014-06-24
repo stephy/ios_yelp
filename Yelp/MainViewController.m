@@ -57,11 +57,20 @@ int const BUTTON_WIDTH = 70;
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 0.0, SEARCHBAR_WIDTH, SEARCHBAR_HEIGHT)];
     self.searchBar.backgroundColor = [UIColor clearColor];
     self.searchBar.delegate = self;
+    //change background to transparent
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    //change cursor color
+    self.searchBar.tintColor = [UIColor colorWithRed:0.941 green:0 blue:0.282 alpha:1]; //pink red
+    
+    //change text color
+    UITextField *searchField = [self.searchBar valueForKey:@"_searchField"];
+    searchField.textColor = [UIColor colorWithRed:0.941 green:0.941 blue:0.941 alpha:1]; //light grey
+
     
     //creating button for filter
     self.filterButton = [[UIButton alloc] initWithFrame:CGRectMake(230, 0.0, BUTTON_WIDTH, BUTTON_HEIGHT)];
-    [self.filterButton setTitle:@"Filter" forState:UIControlStateNormal];
-    [self.filterButton setBackgroundColor:mainColor];
+    [self.filterButton setTitle:@"Filters" forState:UIControlStateNormal];
+    //[self.filterButton setBackgroundColor:mainColor];
     
     //adding action to button
     [self.filterButton addTarget:self action:@selector(onFiltersButton) forControlEvents:UIControlEventTouchDown];

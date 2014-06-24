@@ -536,7 +536,7 @@ int const TOTAL_SECTIONS = 5;
 
 - (void)setCategoryFilter{
     NSArray *array = [self.categoriesFilter copy];
-    NSLog(@"setting category filter array: %@", array);
+    //NSLog(@"setting category filter array: %@", array);
     [self saveFilterSettingArray:array withKey:@"category"];
     self.filterOptions.category = [self.categoriesFilter copy];
 }

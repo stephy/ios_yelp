@@ -41,7 +41,7 @@
                                  @"radius_filter": radius,
                                  @"deals_filter": deals,
                                  @"location" : @"San Jose"};
-    //NSLog(@"query: %@", parameters);
+    ///NSLog(@"query: %@", parameters);
     return [self GET:@"search" parameters:parameters success:success failure:failure];
 }
 

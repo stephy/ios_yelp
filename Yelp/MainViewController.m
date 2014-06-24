@@ -108,7 +108,7 @@ int const BUTTON_WIDTH = 70;
 
     cell.nameLabel.text = b.name;
     cell.locationLabel.text = b.location;
-    //cell.categoriesLabel.text = b.categories;
+    cell.categoriesLabel.text = [b.categories[0] componentsJoinedByString:@", "];
     [cell.reviewCountLabel setText:[NSString stringWithFormat:@"%@ Reviews", b.reviewCount]];
     
     //poster image
@@ -166,5 +166,14 @@ int const BUTTON_WIDTH = 70;
 - (void)viewWillAppear:(BOOL)animated {
     //load default settings
     self.filterOptions = [[FilterOptions alloc] init];
+}
+
+#pragma Mark Helper Functions
+- (NSString *)getSubstring:(NSString *)value betweenString:(NSString *)separator{
+    NSRange firstInstance = [value rangeOfString:separator];
+    NSRange secondInstance = [[value substringFromIndex:firstInstance.location + firstInstance.length] rangeOfString:separator];
+    NSRange finalRange = NSMakeRange(firstInstance.location + separator.length, secondInstance.location);
+    
+    return [value substringWithRange:finalRange];
 }
 @end

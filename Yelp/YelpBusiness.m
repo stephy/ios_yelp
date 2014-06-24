@@ -32,7 +32,7 @@
         self.reviewCount = dictionary[@"review_count"];
         self.posterURL = dictionary[@"image_url"];
         self.ratingImageURL = dictionary[@"rating_img_url"];
-        //self.categories = [dictionary[@"categories"] objectAtIndex:0];
+        self.categories = dictionary[@"categories"];
     }
     
     return self;

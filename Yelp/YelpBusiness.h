@@ -14,7 +14,7 @@
 @property (strong,nonatomic) NSString *location; //street + city
 @property (strong,nonatomic) NSNumber *rating;
 @property (strong,nonatomic) NSNumber *reviewCount;
-@property (strong,nonatomic) NSString *categories;
+@property (strong,nonatomic) NSArray *categories;
 @property (strong,nonatomic) NSString *posterURL;
 @property (strong,nonatomic) NSString *ratingImageURL;
 

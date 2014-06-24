@@ -34,13 +34,14 @@
                                    failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
     
     // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
+    //NSLog(@"radius_filter  %@", radius);
     NSDictionary *parameters = @{@"term": term,
                                  @"sort": sort,
                                  @"category_filter": category,
                                  @"radius_filter": radius,
                                  @"deals_filter": deals,
                                  @"location" : @"San Jose"};
-    NSLog(@"query: %@", parameters);
+    //NSLog(@"query: %@", parameters);
     return [self GET:@"search" parameters:parameters success:success failure:failure];
 }
 

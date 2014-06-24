@@ -24,7 +24,7 @@
         }else{
             self.price = priceControlIndex;
         }
-        NSLog(@"init filters called, priceControlIndex is: %d", self.price);
+       // NSLog(@"init filters called, priceControlIndex is: %d", self.price);
         
         //category
         NSMutableArray *cat = [[defaults arrayForKey:@"category"] mutableCopy];
@@ -33,7 +33,7 @@
         }else{
             self.category = cat;
         }
-        NSLog(@"init filters called, categories is: %@", [defaults arrayForKey:@"category"]);
+        //NSLog(@"init filters called, categories is: %@", [defaults arrayForKey:@"category"]);
         
         //sort by
         NSString *sort = [defaults stringForKey:@"sort"];
@@ -42,7 +42,7 @@
         }else{
             self.sortBy = sort;
         }
-        NSLog(@"sort set on init: %@", self.sortBy);
+       // NSLog(@"sort set on init: %@", self.sortBy);
         
         //distance
         NSString *dist = [defaults stringForKey:@"distance"];
@@ -51,7 +51,7 @@
         }else{
             self.distance = dist;
         }
-        NSLog(@"distance set on init: %@", self.distance);
+       // NSLog(@"distance set on init: %@", self.distance);
         
         //deals
         BOOL d = [defaults boolForKey:@"deals"];
@@ -87,7 +87,7 @@
                               @"Restaurants" : @"restaurants",
                               @"Shopping" : @"shopping"
                               };
-        self.distanceConversions = @{@"Auto": @"", @"0.5 miles" : @"804", @"1 mile":@"1609", @"5 miles":@"8046"};
+        self.distanceConversions = @{@"Auto": @"4000", @"0.5 miles" : @"804", @"1 mile":@"1609", @"5 miles":@"8046"};
         self.sortCodes = @{ @"Best Match": @"0", @"Distance": @"1", @"Highest Rated": @"2" };
     }
     return self;

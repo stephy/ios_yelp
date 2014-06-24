@@ -29,12 +29,14 @@ int const TOTAL_SECTIONS = 5;
 @property (strong, nonatomic) NSDictionary *categoryKeys;
 @property BOOL *showAllCategories;
 @property BOOL *actionCell;
+@property BOOL *distanceExpanded;
 @property (nonatomic, retain) NSIndexPath *checkedIndexPath;
 @property (nonatomic, retain) NSIndexPath *checkedSortIndexPath;
 @property (nonatomic, retain) NSIndexPath *checkedDistanceIndexPath;
 @property (strong, nonatomic) NSMutableArray *categoriesFilter;
 @property (strong, nonatomic) NSString *distanceFilter;
 @property (strong, nonatomic) NSString *sortByFilter;
+
 
 
 @end
@@ -52,6 +54,7 @@ int const TOTAL_SECTIONS = 5;
         self.showAllCategories = NO;
         self.actionCell = NO;
         self.categoriesFilter = [[NSMutableArray alloc] init];
+        self.distanceExpanded = NO;
 
     }
     
@@ -115,7 +118,12 @@ int const TOTAL_SECTIONS = 5;
     
     //distance
     if (section == SECTION_DISTANCE) {
-        return [self.distance count];
+        if (!self.distanceExpanded){
+            return 1; //only show first row
+        }else{
+            return [self.distance count]; //show all options
+        }
+        
     }
     
     return 0;
@@ -173,11 +181,11 @@ int const TOTAL_SECTIONS = 5;
         AccordionCell *sortByCell = [tableView dequeueReusableCellWithIdentifier:@"AccordionCell"];
         sortByCell.rowLabel.text = self.sortBy[indexPath.row];
         cell = sortByCell;
-        NSLog(@"default sort: %@,%@", self.filterOptions.sortBy, self.sortBy[indexPath.row]);
+        //NSLog(@"default sort: %@,%@", self.filterOptions.sortBy, self.sortBy[indexPath.row]);
         
         if([self.filterOptions.sortBy isEqualToString:self.sortBy[indexPath.row]]){
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
-            NSLog(@"equal");
+            //NSLog(@"equal");
             self.checkedSortIndexPath = indexPath;
         }else{
             cell.accessoryType = UITableViewCellAccessoryNone;
@@ -189,10 +197,10 @@ int const TOTAL_SECTIONS = 5;
         AccordionCell *distanceCell = [tableView dequeueReusableCellWithIdentifier:@"AccordionCell"];
         distanceCell.rowLabel.text = self.distance[indexPath.row];
         cell = distanceCell;
-        NSLog(@"default distance: %@,%@", self.filterOptions.distance, self.distance[indexPath.row]);
+        //NSLog(@"default distance: %@,%@", self.filterOptions.distance, self.distance[indexPath.row]);
 
         if([self.filterOptions.distance isEqualToString:self.distance[indexPath.row]]){
-            NSLog(@"equal");
+            //NSLog(@"equal");
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             self.checkedDistanceIndexPath = indexPath;
         }else{
@@ -294,7 +302,6 @@ int const TOTAL_SECTIONS = 5;
                 [self removeItemFromArray:self.categoriesFilter item:self.categories[indexPath.row]];
 
             } else {
-                NSLog(@"am I here?");
                 UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
                 //saving to filter
@@ -338,17 +345,61 @@ int const TOTAL_SECTIONS = 5;
      */
     
     if (indexPath.section == SECTION_DISTANCE) {
-        // Uncheck the previous checked row
-        if(self.checkedDistanceIndexPath){
-            UITableViewCell* uncheckCell = [tableView
-                                            cellForRowAtIndexPath:self.checkedDistanceIndexPath];
-            uncheckCell.accessoryType = UITableViewCellAccessoryNone;
-        }
 
-        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        [self setDistanceFilter:self.distance[indexPath.row]];
-        self.checkedDistanceIndexPath = indexPath;
+        //row not expanded
+        if (!self.distanceExpanded && indexPath.row == 0) {
+            //tapping on first row should expand list
+            self.distanceExpanded = YES;
+            /* Animate the table view reload */
+            [UIView transitionWithView: self.tableView
+                              duration: 0.35f
+                               options: UIViewAnimationOptionTransitionCrossDissolve
+                            animations: ^(void)
+             {
+                 [self.tableView reloadData];
+             }
+                            completion: ^(BOOL isFinished)
+             {
+                 /* TODO: Whatever you want here */
+                 
+             }];
+            
+        }else{
+            //allow user to checkmark row
+            // Uncheck the previous checked row
+            self.distanceExpanded = NO;
+            UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            [self setDistanceFilter:self.distance[indexPath.row]];
+            self.checkedDistanceIndexPath = indexPath;
+            
+            //swap spots in array to have selected option on top
+            NSInteger row = indexPath.row;
+            NSInteger zero = 0;
+            NSMutableArray *swap = [NSMutableArray arrayWithArray:self.distance];
+            [swap exchangeObjectAtIndex:zero withObjectAtIndex:row];
+            self.distance = [swap mutableCopy];
+            
+            /* Animate the table view reload */
+            [UIView transitionWithView: self.tableView
+                              duration: 0.35f
+                               options: UIViewAnimationOptionTransitionCrossDissolve
+                            animations: ^(void)
+             {
+                 [self.tableView reloadData];
+             }
+                            completion: ^(BOOL isFinished)
+             {
+                 /* TODO: Whatever you want here */
+                 
+                 
+             }];
+            
+            
+        }
+    
+    
+        
     }
 }
 
@@ -391,6 +442,10 @@ int const TOTAL_SECTIONS = 5;
      }];
 }
 
+-(void)buttonPressed{
+    NSLog(@"Pressing button");
+}
+
 
 #pragma mark Managing Arrays
 
@@ -401,7 +456,7 @@ int const TOTAL_SECTIONS = 5;
             checked = YES;
         }
     }
-    NSLog(@"checked? %d", checked);
+    //NSLog(@"checked? %d", checked);
     return checked;
     
 }
@@ -411,7 +466,7 @@ int const TOTAL_SECTIONS = 5;
     for (NSString *s in array) {
         if (s == item){
             //remove item from array
-            NSLog(@"Found!, removing %@", item);
+            //NSLog(@"Found!, removing %@", item);
             itemToRemove = s;
             break;
         }
@@ -468,14 +523,14 @@ int const TOTAL_SECTIONS = 5;
 
 - (void)setSortByFilter:(id)sender{
     [self saveFilterSettingObject:sender withKey:@"sort"];
-    NSLog(@"sender sort: %@", sender);
+    //NSLog(@"sender sort: %@", sender);
     self.filterOptions.sortBy = sender;
     
 }
 
 - (void)setDistanceFilter:(id)sender{
     [self saveFilterSettingObject:sender withKey:@"distance"];
-    NSLog(@"sender distance: %@", sender);
+    //NSLog(@"sender distance: %@", sender);
     self.filterOptions.distance = sender;
 }
 
@@ -504,6 +559,8 @@ int const TOTAL_SECTIONS = 5;
     self.filterOptions = [[FilterOptions alloc] init];
     //self.categoriesFilter = [[NSMutableArray alloc] init];
     self.categoriesFilter = self.filterOptions.category;
+    //based on filters select first row to show on distance
+    [self swapWith:self.filterOptions.distance];
 
 }
 
@@ -512,7 +569,25 @@ int const TOTAL_SECTIONS = 5;
     [self setCategoryFilter];
 }
 
-
+#pragma Mark Swapping
+-(void)swapWith: (NSString *)selected{
+    //swap spots in array to have selected option on top
+    NSInteger row = 0;
+    for (NSString *option in self.distance) {
+        
+        if ([option isEqualToString:selected]) {
+            break;
+        }else{
+            row++;
+        }
+        
+    }
+    
+    NSInteger zero = 0;
+    NSMutableArray *swap = [NSMutableArray arrayWithArray:self.distance];
+    [swap exchangeObjectAtIndex:zero withObjectAtIndex:row];
+    self.distance = [swap mutableCopy];
+}
 
 
 @end

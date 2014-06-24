@@ -298,9 +298,10 @@ int const TOTAL_SECTIONS = 5;
                 UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
                 //saving to filter
-                if (![self.categoriesFilter containsObject:self.categories[indexPath.row]])
+                if (![self.categoriesFilter containsObject:self.categories[indexPath.row]]){
                     [self.categoriesFilter addObject:self.categories[indexPath.row]];
-                //[self.categoriesFilter addObject:self.categories[indexPath.row]];
+                }
+                
                 self.checkedIndexPath = indexPath;
             }
         }
